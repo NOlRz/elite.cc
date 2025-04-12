@@ -1,0 +1,567 @@
+@font-face {
+    font-family: 'Bold';
+    src: url('../../src/fonts/mainfont.ttf');
+}
+
+@font-face {
+    font-family: 'Light';
+    src: url('../../src/fonts/miscfont.ttf');
+}
+
+.highlight {
+    color: #C18be0;
+    text-shadow:
+    0 0 42px #C18be0,
+    0 0 82px #C18be0;
+}
+
+/* Enhanced Animations */
+@keyframes fadeIn {
+    0% { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.95);
+        filter: blur(10px);
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes fadeOut {
+    0% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+    100% { 
+        opacity: 0; 
+        transform: translateY(-30px) scale(0.95);
+        filter: blur(10px);
+    }
+}
+
+@keyframes float {
+    0% { 
+        transform: translateY(0) rotate(0deg);
+    }
+    25% { 
+        transform: translateY(-10px) rotate(0.5deg);
+    }
+    50% { 
+        transform: translateY(0) rotate(0deg);
+    }
+    75% { 
+        transform: translateY(10px) rotate(-0.5deg);
+    }
+    100% { 
+        transform: translateY(0) rotate(0deg);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(193, 139, 224, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(193, 139, 224, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(193, 139, 224, 0);
+    }
+}
+
+@keyframes glowPulse {
+    0% {
+        filter: drop-shadow(0 0 5px rgba(193, 139, 224, 0.6));
+    }
+    50% {
+        filter: drop-shadow(0 0 15px rgba(193, 139, 224, 0.8));
+    }
+    100% {
+        filter: drop-shadow(0 0 5px rgba(193, 139, 224, 0.6));
+    }
+}
+
+@keyframes rotateGlow {
+    0% {
+        transform: rotate(0deg);
+        filter: hue-rotate(0deg) drop-shadow(0 0 8px rgba(193, 139, 224, 0.6));
+    }
+    100% {
+        transform: rotate(360deg);
+        filter: hue-rotate(360deg) drop-shadow(0 0 8px rgba(193, 139, 224, 0.6));
+    }
+}
+
+/* Overlay */
+#overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+}
+
+.overlaybtn {
+    background-color: transparent;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    font-family: 'Light';
+    font-size: 6vh;
+    padding: 20px 40px;
+    text-shadow: 0 0 7px #fff,
+                 0 0 10px #fff,
+                 0 0 21px #fff;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: pulse 2s infinite;
+}
+
+.overlaybtn:hover {
+    transform: scale(1.05) translateY(-5px);
+    text-shadow: 0 0 10px #fff,
+                 0 0 20px #fff,
+                 0 0 30px #fff;
+    animation: none;
+}
+
+/* Basic Setup */
+body {
+    background-color: #000;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    margin: 0;
+    font-family: 'Light', sans-serif;
+}
+
+#user-page {
+    display: none;
+    animation: fadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    position: relative;
+}
+
+.background {
+    z-index: -1;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    object-fit: cover;
+    filter: brightness(0.8);
+    transition: filter 0.5s ease;
+}
+
+/* Profile Containers */
+.main-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+    padding: 30px;
+    overflow: visible;
+    perspective: 1000px;
+}
+
+.profile-container {
+    flex: 1;
+    max-width: 320px;
+    border-radius: 24px;
+    background: rgba(17, 17, 17, 0.75);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: float 8s ease-in-out infinite;
+    animation-delay: calc(var(--animation-order) * 0.2s);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(193, 139, 224, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(0.5);
+    z-index: -1;
+}
+
+.profile-container:hover {
+    transform: translateY(-10px) scale(1.02) rotate(1deg);
+    box-shadow: 0 15px 45px rgba(193, 139, 224, 0.2);
+    border-color: rgba(193, 139, 224, 0.3);
+    animation-play-state: paused;
+}
+
+.profile-container:hover::before {
+    opacity: 1;
+    transform: scale(1);
+    animation: rotateGlow 8s linear infinite;
+}
+
+.pp {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(193, 139, 224, 0.3);
+    box-shadow: 0 0 30px rgba(193, 139, 224, 0.3);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: pulse 3s infinite;
+    position: relative;
+}
+
+.pp::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    border: 2px solid rgba(193, 139, 224, 0.3);
+    animation: pulse 2s infinite;
+}
+
+.profile-container:hover .pp {
+    transform: scale(1.1) rotate(-5deg);
+    border-color: rgba(193, 139, 224, 0.6);
+    box-shadow: 0 0 40px rgba(193, 139, 224, 0.4);
+    animation: glowPulse 2s infinite;
+}
+
+.username {
+    font-family: 'Bold';
+    font-size: 24px;
+    color: #fff;
+    margin: 20px 0 15px;
+    position: relative;
+    text-shadow: 0 0 10px rgba(193, 139, 224, 0.6);
+    transition: all 0.3s ease;
+}
+
+/* Badges */
+.badges-container {
+    display: flex;
+    gap: 20px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50px;
+    padding: 16px 35px;
+    margin: 15px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.badges-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(193, 139, 224, 0.2),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.profile-container:hover .badges-container::before {
+    left: 100%;
+    transition: 0.5s;
+}
+
+.profile-container:hover .badges-container {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(193, 139, 224, 0.3);
+    transform: scale(1.05);
+}
+
+.badges {
+    width: 24px;
+    height: 24px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: drop-shadow(0 0 5px rgba(193, 139, 224, 0.6));
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.badges:hover {
+    transform: scale(1.3) rotate(15deg);
+    filter: drop-shadow(0 0 8px rgba(193, 139, 224, 0.8));
+    animation: glowPulse 2s infinite;
+}
+
+/* Bio */
+.bio-container {
+    width: 90%;
+    padding: 20px;
+    background: rgba(22, 22, 22, 0.4);
+    border-radius: 16px;
+    backdrop-filter: blur(5px);
+    margin-top: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: top;
+    position: relative;
+    overflow: hidden;
+}
+
+.bio-container::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(193, 139, 224, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(0.5);
+}
+
+.profile-container:hover .bio-container {
+    background: rgba(22, 22, 22, 0.5);
+    border-color: rgba(193, 139, 224, 0.3);
+    transform: scale(1.02);
+}
+
+.profile-container:hover .bio-container::after {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.bio {
+    font-family: 'Light';
+    font-size: 16px;
+    color: #fff;
+    line-height: 1.6;
+    text-align: center;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+.profile-container:hover .bio {
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(193, 139, 224, 0.4);
+}
+
+/* Tooltips */
+[data-tooltip] {
+    position: relative;
+}
+
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    font-size: 14px;
+    border-radius: 6px;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-tooltip]:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-5px);
+    box-shadow: 0 0 20px rgba(193, 139, 224, 0.2);
+}
+
+/* Volume Control */
+#volume-control {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1000;
+    transform: translateX(-20px);
+}
+
+#volume-control.visible {
+    opacity: 0.4;
+    pointer-events: auto;
+    transform: translateX(0);
+}
+
+#volume-control:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(193, 139, 224, 0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
+}
+
+#volume-icon {
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+}
+
+#volume-control:hover #volume-icon {
+    opacity: 1;
+}
+
+#volume-slider {
+    width: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 1px;
+    outline: none;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+#volume-control:hover #volume-slider {
+    width: 60px;
+    opacity: 1;
+}
+
+#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#volume-slider::-webkit-slider-thumb:hover {
+    background: rgba(193, 139, 224, 0.8);
+    transform: scale(1.2);
+}
+
+/* Enhanced Cursor Effects */
+.cursor-particle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: rgba(193, 139, 224, 0.8);
+    border-radius: 50%;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    z-index: 10000;
+    animation: fadeOut 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.cursor-trail {
+    position: absolute;
+    background: rgba(193, 139, 224, 0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    z-index: 9999;
+    animation: trailFade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes trailFade {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .main-container {
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .profile-container {
+        flex: 0 1 calc(50% - 20px);
+        max-width: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-container {
+        flex: 0 1 100%;
+    }
+    
+    .overlaybtn {
+        font-size: 4vh;
+        padding: 15px 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-container {
+        padding: 15px;
+    }
+    
+    .pp {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .username {
+        font-size: 20px;
+    }
+    
+    .badges-container {
+        padding: 12px 25px;
+    }
+}
